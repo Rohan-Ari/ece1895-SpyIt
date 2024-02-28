@@ -5,9 +5,12 @@ const int speaker = 10;
 const int miroSD = 11;
 
 int buttonState = 0;
-int buttonState = 0;
-int buttonState = 0;
+int switchState = 0;
+int dialState = 0;
 
+int Error = False; 
+int Play = False; 
+int* simon_array = 0;
 
 void setup() {
   pinMode(button, INPUT);
@@ -18,81 +21,66 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-Error = False; 
-Play = false; 
+While(play == false) //use as separate function to detect if a user wants to play 
 { 
-
-While(play == false) #use as separate function to detect if a user wants to play 
-{ 
-
-  //essentially if button mechanism is triggered, start the game 
-
+  buttonState = digitalRead(button);
+  if (buttonState == HIGH){
+    Play = True;
+  } 
 } 
 
-  (Generate random array of 15 numbers between 1 and 3 for the 3 different mechanisms) 
+  
+  generateRandomArray() //generates the random number array
 
-  For(int j=1; j<=15; j++) //Incrementing simon says patterns 
-
+  For(int j=1; j<=15; j++) //Increments total simon says patterns 
   { 
+    For(int i=j; i>=1; j--) //plays incrementing simon says patterns
+    { 
+    Switch(i) 
 
-    For(int i=j; i>=1; j--) //simon says patterns 
+    case 1 //first mechanism (button)
+
+    checkMech_button();
+
+    
+
+    case 2 //second mechanism (switch)
+
+    checkMech_switch();
+
+    
+
+    case 3 //third mechanism (dial)
+
+    checkMech_dial();
+
+  
+  
+    If (Error == TRUE) 
 
     { 
 
-    Switch(i) 
+      break; 
+
+    } else{ 
+
+      //Play correct choice sound 
+
+    } 
 
   
 
-  Case 1 //first mechanism 
+  } 
 
-  //Loop until input is detected and error check (in separate function) 
-
-  //If incorrect, error = True 
-
-  
-
-  Case 2 //second mechanism 
-
-  //Loop until input is detected and error check (in separate function) 
-
-  //If incorrect, error = True 
-
-  
-
-  Case 3 //third mechanism 
-
-  //Loop until input is detected and error check (in separate function) 
-
-  //If incorrect, error = True 
-
-  
-
-  If (error == TRUE) 
+  If (Error == TRUE) 
 
   { 
 
-  break; 
+    break; 
 
   } else{ 
 
-  //Play correct choice sound 
-
-  } 
-
-  
-
-  } 
-
-  If (error == TRUE) 
-
-  { 
-
-  Break; 
-
-  } else{ 
-
-  //Play correct pattern audio sound 
+    //Play correct pattern audio sound 
 
   } 
 
@@ -102,7 +90,7 @@ While(play == false) #use as separate function to detect if a user wants to play
 
   } 
 
-  If (error == TRUE) 
+  If (Error == TRUE) 
 
   { 
 
@@ -113,9 +101,59 @@ While(play == false) #use as separate function to detect if a user wants to play
     //Play winning audio sound 
 
   } 
-
-  
-
-  
-
+  Error = false;
+  Play = false;
 } 
+
+
+
+void generateRandomArray() {
+
+  // Initialize random number generator
+  randomSeed(analogRead(0));
+
+  // Populate the array with random numbers between 1 and 3
+  for (int i = 0; i < 15; ++i) {
+    simon_aray[i] = random(1, 4); // Generate random number between 1 and 3
+  }
+
+}
+
+void checkMech_button() {
+
+  while(true) {}
+    buttonState = digitalRead(button);
+    if (buttonState == HIGH) {
+      break;
+    } else if(switchState == HIGH; dialState == HIGH;) {
+      Error = true;
+      break;
+    }
+  }
+}
+
+void checkMech_dial() {
+
+  while(true) {}
+    dialState = digitalRead(dial);
+    if (dialState == HIGH) {
+      break;
+    } else if(buttonState == HIGH; switchState == HIGH;) {
+      Error = true;
+      break;
+    }
+  }
+}
+
+void checkMech_switch() {
+
+  while(true) {}
+    switchState = digitalRead(flip_switch);
+    if (switchState == HIGH) {
+      break;
+    } else if(buttonState == HIGH; dialState == HIGH;) {
+      Error = true;
+      break;
+    }
+  }
+}
