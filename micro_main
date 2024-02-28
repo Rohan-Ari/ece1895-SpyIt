@@ -1,0 +1,121 @@
+const int button = 7;
+const int flip_switch = 8;
+const int dial = 9;
+const int speaker = 10;
+const int miroSD = 11;
+
+int buttonState = 0;
+int buttonState = 0;
+int buttonState = 0;
+
+
+void setup() {
+  pinMode(button, INPUT);
+  pinMode(flip_switch, INPUT);
+  pinMode(dial, INPUT);
+  pinMode(speaker, OUTPUT);
+  pinMode(miroSD, INPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+Error = False; 
+Play = false; 
+{ 
+
+While(play == false) #use as separate function to detect if a user wants to play 
+{ 
+
+  //essentially if button mechanism is triggered, start the game 
+
+} 
+
+  (Generate random array of 15 numbers between 1 and 3 for the 3 different mechanisms) 
+
+  For(int j=1; j<=15; j++) //Incrementing simon says patterns 
+
+  { 
+
+    For(int i=j; i>=1; j--) //simon says patterns 
+
+    { 
+
+    Switch(i) 
+
+  
+
+  Case 1 //first mechanism 
+
+  //Loop until input is detected and error check (in separate function) 
+
+  //If incorrect, error = True 
+
+  
+
+  Case 2 //second mechanism 
+
+  //Loop until input is detected and error check (in separate function) 
+
+  //If incorrect, error = True 
+
+  
+
+  Case 3 //third mechanism 
+
+  //Loop until input is detected and error check (in separate function) 
+
+  //If incorrect, error = True 
+
+  
+
+  If (error == TRUE) 
+
+  { 
+
+  break; 
+
+  } else{ 
+
+  //Play correct choice sound 
+
+  } 
+
+  
+
+  } 
+
+  If (error == TRUE) 
+
+  { 
+
+  Break; 
+
+  } else{ 
+
+  //Play correct pattern audio sound 
+
+  } 
+
+  
+
+  
+
+  } 
+
+  If (error == TRUE) 
+
+  { 
+
+    //Play losing audio sound 
+
+    }else{ 
+
+    //Play winning audio sound 
+
+  } 
+
+  
+
+  
+
+} 
