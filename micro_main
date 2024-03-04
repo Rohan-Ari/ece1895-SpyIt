@@ -11,13 +11,16 @@ int dialState = 0;
 int Error = False; 
 int Play = False; 
 int* simon_array = 0;
+int switch_state;
+
 
 void setup() {
   pinMode(button, INPUT);
   pinMode(flip_switch, INPUT);
-  pinMode(dial, INPUT);
+  pinMode(joystick, INPUT);
   pinMode(speaker, OUTPUT);
   pinMode(miroSD, INPUT);
+  switch_state = digitalread(flip_switch);
 }
 
 void loop() {
@@ -44,6 +47,8 @@ While(play == false) //checks if user wants to play
 
     case 1 //first mechanism (button)
 
+    //play button audio
+
     checkMech_button();
 
     
@@ -54,9 +59,9 @@ While(play == false) //checks if user wants to play
 
     
 
-    case 3 //third mechanism (dial)
+    case 3 //third mechanism (joystick)
 
-    checkMech_dial();
+    checkMech_joystick();
 
   
   
@@ -129,18 +134,18 @@ void checkMech_button() {
     buttonState = digitalRead(button);
     if (buttonState == HIGH) {
       break;
-    } else if(switchState == HIGH; dialState == HIGH;) {
+    } else if(switchState == HIGH; joystickState == HIGH;) {
       Error = true;
       break;
     }
   }
 }
 
-void checkMech_dial() {
+void checkMech_joystick() {
 
   while(true) {}
-    dialState = digitalRead(dial);
-    if (dialState == HIGH) {
+    joystickState = digitalRead(joystick);
+    if (joystickState == HIGH) {
       break;
     } else if(buttonState == HIGH; switchState == HIGH;) {
       Error = true;
@@ -151,11 +156,16 @@ void checkMech_dial() {
 
 void checkMech_switch() {
 
-  while(true) {}
+  while(true) 
+  {
     switchState = digitalRead(flip_switch);
-    if (switchState == HIGH) {
-      break;
-    } else if(buttonState == HIGH; dialState == HIGH;) {
+    if (switch_state != switchState)
+    {
+      if (switchState == HIGH) {
+        switch_state = switchState;
+        break;
+      }
+    } else if(buttonState == HIGH; joystickState == HIGH;) {
       Error = true;
       break;
     }
