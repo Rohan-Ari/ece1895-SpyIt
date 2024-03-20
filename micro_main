@@ -161,7 +161,7 @@ void checkMech_button(string color) {
 		break;
 	}
 
-  while(true) {}
+  while(true) {
     buttonState = digitalRead(button_choice);
     if (buttonState == HIGH) {
       break;
