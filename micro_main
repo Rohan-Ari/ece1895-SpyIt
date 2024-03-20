@@ -1,12 +1,26 @@
+//TMRpcm library is needed
+
+#include "SD.h"
+#define SD_ChipSelectPin 11
+#include "TMRpcm.h"
+#include "SPI.h"
+
+TMRpcm tmrpcm;
+
+
+
 const int button = 7;
 const int flip_switch = 8;
-const int dial = 9;
+const int joystick = 9;
 const int speaker = 10;
-const int miroSD = 11;
+const int microSD = 11;
+const int blue_button = ;
+const int yellow_button = ;
+const int red_button = ;
 
 int buttonState = 0;
 int switchState = 0;
-int dialState = 0;
+int joyState = 0;
 
 int Error = False; 
 int Play = False; 
@@ -21,6 +35,16 @@ void setup() {
   pinMode(speaker, OUTPUT);
   pinMode(miroSD, INPUT);
   switch_state = digitalread(flip_switch);
+
+  tmrpcm.speakerPin=speaker;
+  Serial.begin(9600);
+  if(!SD.begin(SD_ChipSelectPin))
+  {
+    Serial.println("SD fail");
+    return;
+  }
+  tmrpcm.setVolume(6);
+ 
 }
 
 void loop() {
@@ -31,83 +55,72 @@ While(play == false) //checks if user wants to play
 
   if (buttonState == HIGH){ 
     Play = True;
+    tmrpcm.play(“start.wav");
   } 
 
 } 
 
   
-  generateRandomArray() //generates the random number array
+	generateRandomArray() //generates the random number array
 
-  For(int j=1; j<=15; j++) //Increments total simon says patterns 
-  { 
-    For(int i=0; i<j; i++) //plays incrementing simon says patterns
-    { 
+	for(int j=1; j<=15; j++) //Increments total simon says patterns 
+	{ 
+		for(int i=0; i<j; i++) //plays incrementing simon says patterns
+		{ 
+			audio_pattern(j); //plays audio for the pattern
+			switch(simonArray[i]) //calls a mechanism function depending on the value of simonArray[i]
+			{
+				case 1: //yellow button
+				checkMech_button("yellow");
+				break;
+			
 
-    Switch(simonArray[i]) //calls a mechanism function depending on the value of simonArray[i]
+				case 2: //blue button
+				checkMech_button("blue");
+				break;
+			
 
-    case 1 //first mechanism (button)
+				case 3: //red button
+				checkMech_button("red");
+				break;
 
-    //play button audio
+				Case 4: //switch
+				checkMech_switch();
+				break;
 
-    checkMech_button();
+				Case 5: //joystick
+				checkMech_joystick();
+				break;
+			}
+			if (Error == TRUE) 
+			{ 
+			  break; 
+			} else{ 
+			  //Play correct choice sound 
+			  tmrpcm.play(“correct_choice.wav”); 
+			}
+		} 
+		if (Error == TRUE) 
+		{ 
+			break; 
+		} else{ 
+			//Play correct pattern audio sound
+			tmrpcm.play(“correct_pattern.wav”); 
+		} 
 
-    
+	} 
 
-    case 2 //second mechanism (switch)
-
-    checkMech_switch();
-
-    
-
-    case 3 //third mechanism (joystick)
-
-    checkMech_joystick();
-
-  
-  
-    If (Error == TRUE) 
-
-    { 
-
-      break; 
-
-    } else{ 
-
-      //Play correct choice sound 
-
-    } 
-
-  
-
-  } 
-
-  If (Error == TRUE) 
-
-  { 
-
-    break; 
-
-  } else{ 
-
-    //Play correct pattern audio sound 
-
-  } 
-
-  
-
-  
-
-  } 
-
-  If (Error == TRUE) 
+  if (Error == TRUE) 
 
   { 
 
     //Play losing audio sound 
+    tmrpcm.play(“lose.wav”);
 
     }else{ 
 
     //Play winning audio sound 
+    tmrpcm.play(“win.wav");
 
   } 
   Error = false;
@@ -121,17 +134,33 @@ void generateRandomArray() {
   // Initialize random number generator
   randomSeed(analogRead(0));
 
-  // Populate the array with random numbers between 1 and 3
+  // Populate the array with random numbers between 1 and 5
   for (int i = 0; i < 15; ++i) {
-    simon_aray[i] = random(1, 4); // Generate random number between 1 and 3
+    simon_array[i] = random(1, 6); // Generate random number between 1 and 5
   }
 
 }
 
-void checkMech_button() {
+void checkMech_button(string color) {
+	int button_choice;
+	
+	switch(color)
+	{
+		case yellow:
+		button_choice = yellow_button;
+		break;
+		
+		case blue:
+		button_choice = blue_button;
+		break;
+		
+		case red:
+		button_choice = red_button;
+		break;
+	}
 
   while(true) {}
-    buttonState = digitalRead(button);
+    buttonState = digitalRead(button_choice);
     if (buttonState == HIGH) {
       break;
     } else if(switchState == HIGH; joystickState == HIGH;) {
@@ -143,7 +172,7 @@ void checkMech_button() {
 
 void checkMech_joystick() {
 
-  while(true) {}
+  while(true) {
     joystickState = digitalRead(joystick);
     if (joystickState == HIGH) {
       break;
@@ -170,4 +199,38 @@ void checkMech_switch() {
       break;
     }
   }
+}
+
+void audio_pattern(int j) {
+
+    for(int i=0; i<j; i++) //plays audio for incrementing simon says patterns
+    { 
+		switch(simon_array[i])
+		{
+			case 1: //yellow button
+			tmrpcm.play(“yellow.wav");
+			delay(1000);
+			break;
+
+			case 2: //blue button
+			tmrpcm.play(“blue.wav");
+			delay(1000);
+			break;
+
+			case 3: //red button
+			tmrpcm.play(“red.wav");
+			delay(1000);
+			break;
+
+			case 4: //switch
+			tmrpcm.play(“switch.wav");
+			delay(1000);
+			break;
+
+			case 5: //joystick
+			tmrpcm.play(“joystick.wav");
+			delay(1000);
+			break;
+		}
+	}
 }
