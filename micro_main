@@ -9,7 +9,6 @@ TMRpcm tmrpcm;
 
 
 
-const int reset_button = ;
 const int flip_switch = 5;
 const int joystickX = 5;
 const int joystickY = 4;
@@ -50,17 +49,8 @@ void setup() {
 }
 
 void loop() {
-While(play == false) //checks if user wants to play
-{ 
+    tmrpcm.play("Start.wav");
 
-  buttonState = digitalRead(button); 
-
-  if (buttonState == HIGH){ 
-    Play = True;
-    tmrpcm.play("start.wav");
-  } 
-
-} 
 
   
 	generateRandomArray() //generates the random number array
@@ -107,7 +97,7 @@ While(play == false) //checks if user wants to play
 			break; 
 		} else{ 
 			//Play correct pattern audio sound
-			tmrpcm.play(“correct_pattern.wav”); 
+			tmrpcm.play("Correct_Sequence.wav"); 
 		} 
 
 	} 
@@ -117,12 +107,12 @@ While(play == false) //checks if user wants to play
   { 
 
     //Play losing audio sound 
-    tmrpcm.play("lose.wav");
+    tmrpcm.play("Lose.wav");
 
     }else{ 
 
     //Play winning audio sound 
-    tmrpcm.play("win.wav");
+    tmrpcm.play("Win.wav");
 
   } 
   Error = false;
@@ -210,27 +200,27 @@ void audio_pattern(int j) {
 		switch(simon_array[i])
 		{
 			case 1: //yellow button
-			tmrpcm.play("yellow.wav");
+			tmrpcm.play("Yellow_Button.wav");
 			delay(1000);
 			break;
 
 			case 2: //blue button
-			tmrpcm.play("blue.wav");
+			tmrpcm.play("Blue_Button.wav");
 			delay(1000);
 			break;
 
 			case 3: //red button
-			tmrpcm.play("green.wav");
+			tmrpcm.play("Green_Button.wav");
 			delay(1000);
 			break;
 
 			case 4: //switch
-			tmrpcm.play("switch.wav");
+			tmrpcm.play("Switch.wav");
 			delay(1000);
 			break;
 
 			case 5: //joystick
-			tmrpcm.play("joystick.wav");
+			tmrpcm.play("Joystick.wav");
 			delay(1000);
 			break;
 		}
