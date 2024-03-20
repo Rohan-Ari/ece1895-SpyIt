@@ -9,18 +9,20 @@ TMRpcm tmrpcm;
 
 
 
-const int button = 7;
-const int flip_switch = 8;
-const int joystick = 9;
-const int speaker = 10;
+const int reset_button = ;
+const int flip_switch = 5;
+const int joystickX = 5;
+const int joystickY = 4;
+const int speaker = 9;
 const int microSD = 11;
-const int blue_button = ;
-const int yellow_button = ;
-const int red_button = ;
+const int blue_button = 6;
+const int yellow_button = 7;
+const int green_button = 8;
 
 int buttonState = 0;
 int switchState = 0;
-int joyState = 0;
+int joyStateX = 0;
+int joyStateY = 0;
 
 int Error = False; 
 int Play = False; 
@@ -55,7 +57,7 @@ While(play == false) //checks if user wants to play
 
   if (buttonState == HIGH){ 
     Play = True;
-    tmrpcm.play(“start.wav");
+    tmrpcm.play("start.wav");
   } 
 
 } 
@@ -80,8 +82,8 @@ While(play == false) //checks if user wants to play
 				break;
 			
 
-				case 3: //red button
-				checkMech_button("red");
+				case 3: //green button
+				checkMech_button("green");
 				break;
 
 				Case 4: //switch
@@ -115,12 +117,12 @@ While(play == false) //checks if user wants to play
   { 
 
     //Play losing audio sound 
-    tmrpcm.play(“lose.wav”);
+    tmrpcm.play("lose.wav");
 
     }else{ 
 
     //Play winning audio sound 
-    tmrpcm.play(“win.wav");
+    tmrpcm.play("win.wav");
 
   } 
   Error = false;
@@ -155,7 +157,7 @@ void checkMech_button(string color) {
 		break;
 		
 		case red:
-		button_choice = red_button;
+		button_choice = green_button;
 		break;
 	}
 
@@ -208,27 +210,27 @@ void audio_pattern(int j) {
 		switch(simon_array[i])
 		{
 			case 1: //yellow button
-			tmrpcm.play(“yellow.wav");
+			tmrpcm.play("yellow.wav");
 			delay(1000);
 			break;
 
 			case 2: //blue button
-			tmrpcm.play(“blue.wav");
+			tmrpcm.play("blue.wav");
 			delay(1000);
 			break;
 
 			case 3: //red button
-			tmrpcm.play(“red.wav");
+			tmrpcm.play("green.wav");
 			delay(1000);
 			break;
 
 			case 4: //switch
-			tmrpcm.play(“switch.wav");
+			tmrpcm.play("switch.wav");
 			delay(1000);
 			break;
 
 			case 5: //joystick
-			tmrpcm.play(“joystick.wav");
+			tmrpcm.play("joystick.wav");
 			delay(1000);
 			break;
 		}
