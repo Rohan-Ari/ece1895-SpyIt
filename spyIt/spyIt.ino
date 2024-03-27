@@ -5,7 +5,7 @@ static int randomSeedInt = 0;
 //pin mappings
 const int joystickX = 5;
 const int joystickY = 4;
-const int yellowButton = 7; 
+const int yellowButton = 8; 
 const int blueButton = 6;
 const int missileSwitch = 5;
 const int redLED = 0;
@@ -60,22 +60,24 @@ void setup()
   //Reading static random seed variable
   randomSeedInt = EEPROM.read(EEPROM_ADDRESS);
 
-  //Serial monitoring for debugging
-  Serial.begin(9600);
+  //Speed values
+  float commandSpeed = 1000;
+  float commandPause = 750;
 }
 
 void loop() 
 {
-  /*
-  //We'll have the missile switch act as a start button
-  while(digitalRead(missileSwitch) == LOW)
+  
+  //We'll have the blue button act as a start button
+  while(digitalRead(blueButton) == LOW)
   {
     //Do nothing
     int dummyint = 0;
   }
-  */
+  
 
-  //Clear inputs so we aren't instantly failing the game
+  //Clear inputs so we aren't instantly failing the game, after a debounce delay
+  delay(100);
   resetInputs();
 
   //Now we're starting, generate the list of commands
@@ -92,59 +94,62 @@ void loop()
   randomSeedInt = randomSeedInt % 100;
   EEPROM.write(EEPROM_ADDRESS, randomSeedInt);
 
-  //the command delay value
-  int commandDelay = 1000;
-
   //Play a little Mission Impossible theme to get things started
   digitalWrite(topBlue, HIGH);
   digitalWrite(bottomBlue, HIGH);
-  digitalWrite(leftYellow, HIGH);
-  digitalWrite(rightYellow, HIGH);
-
   tone(speaker, 196, 300);
   delay(450);
+  digitalWrite(topBlue, LOW);
+  digitalWrite(bottomBlue, LOW);
   tone(speaker, 196, 450);
   delay(450);
+  digitalWrite(topBlue, HIGH);
   tone(speaker, 233, 300);
   delay(300);
+  digitalWrite(bottomBlue, HIGH);
   tone(speaker, 262, 300);
   delay(320);
+  digitalWrite(leftYellow, HIGH);
+  digitalWrite(rightYellow, HIGH);
   tone(speaker, 196, 300);
   delay(450);
+  digitalWrite(leftYellow, LOW);
+  digitalWrite(rightYellow, LOW);
   tone(speaker, 196, 450);
   delay(450);
+  digitalWrite(leftYellow, HIGH);
   tone(speaker, 175, 300);
   delay(300);
+  digitalWrite(rightYellow, HIGH);
   tone(speaker, 185, 300);
   delay(300);
-  tone(speaker, 196, 300);
-  delay(300);
-
   digitalWrite(topBlue, LOW);
   digitalWrite(bottomBlue, LOW);
   digitalWrite(leftYellow, LOW);
   digitalWrite(rightYellow, LOW);
+  tone(speaker, 196, 300);
+  delay(300);
 
   delay(1000);
 
   //Now the game starts
   for(int i = 0; i < 15; i++)
   {
-    //Decreasing the delay at certain intervals
-    if(i == 5)
-    {
-      commandDelay = 750;
-    }
-    else if(i == 10)
-    {
-      commandDelay = 500;
-    }
+    if(commandSpeed <= 500)
+      commandSpeed = 500;
+    else
+      commandSpeed = commandSpeed * .92;
+
+    if(commandPause <= 200)
+      commandPause = 200;
+    else
+      commandPause = commandPause * .92;
 
     //Reading out all of the commands up to the new one
     for(int j = 0; j <= i; j++)
     {
-      processCommand(commandArray[j]);
-      delay(commandDelay);
+      processCommand(commandArray[j], commandSpeed);
+      delay(commandPause);
     }
 
     //Playing the State Farm jingle so they know they can start
@@ -179,6 +184,9 @@ void loop()
         delay(2000);
         digitalWrite(redLED, LOW);
 
+        //Function to display score
+        endGame(i);
+
         exit(0);
       }
 
@@ -211,12 +219,13 @@ void loop()
     delay(1000);
   }
 
-  //If we make it here, they've won the whole game and we should prolly do something cool
+  //If we make it here, they've won the whole game
+  endGame(15);
 
 }
 
 //Command to give the correct output for each command
-void processCommand(int x)
+void processCommand(int x, float commandSpeed)
 {
   //for joystick directions, we light the corresponding directional light and do a low beep (293 hz)
   //for buttons, we light the two corresponding colored lights and do a high beep (440 hz)
@@ -226,32 +235,32 @@ void processCommand(int x)
     case 0:
       //joystick up
       digitalWrite(topBlue, HIGH);
-      tone(speaker, 293, 1000);
-      delay(1000);
+      tone(speaker, 293, commandSpeed);
+      delay(commandSpeed);
       digitalWrite(topBlue, LOW);
       break;
 
     case 1:
       //joystick down
       digitalWrite(bottomBlue, HIGH);
-      tone(speaker, 293, 1000);
-      delay(1000);
+      tone(speaker, 293, commandSpeed);
+      delay(commandSpeed);
       digitalWrite(bottomBlue, LOW);
       break;
 
     case 2:
       //joystick left
       digitalWrite(leftYellow, HIGH);
-      tone(speaker, 293, 1000);
-      delay(1000);
+      tone(speaker, 293, commandSpeed);
+      delay(commandSpeed);
       digitalWrite(leftYellow, LOW);
       break;
 
     case 3:
       //joystick right
       digitalWrite(rightYellow, HIGH);
-      tone(speaker, 293, 1000);
-      delay(1000);
+      tone(speaker, 293, commandSpeed);
+      delay(commandSpeed);
       digitalWrite(rightYellow, LOW);
       break;
 
@@ -259,8 +268,8 @@ void processCommand(int x)
       //blue button
       digitalWrite(topBlue, HIGH);
       digitalWrite(bottomBlue, HIGH);
-      tone(speaker, 440, 1000);
-      delay(1000);
+      tone(speaker, 440, commandSpeed);
+      delay(commandSpeed);
       digitalWrite(topBlue, LOW);
       digitalWrite(bottomBlue, LOW);
       break;
@@ -269,8 +278,8 @@ void processCommand(int x)
       //yellow button
       digitalWrite(leftYellow, HIGH);
       digitalWrite(rightYellow, HIGH);
-      tone(speaker, 440, 1000);
-      delay(1000);
+      tone(speaker, 440, commandSpeed);
+      delay(commandSpeed);
       digitalWrite(leftYellow, LOW);
       digitalWrite(rightYellow, LOW);
       break;
@@ -281,19 +290,9 @@ void processCommand(int x)
       digitalWrite(bottomBlue, HIGH);
       digitalWrite(leftYellow, HIGH);
       digitalWrite(rightYellow, HIGH);
-      tone(speaker, 440, 750);
-      delay(750);
-      digitalWrite(topBlue, LOW);
-      digitalWrite(bottomBlue, LOW);
-      digitalWrite(leftYellow, LOW);
-      digitalWrite(rightYellow, LOW);
-      delay(250);
-      digitalWrite(topBlue, HIGH);
-      digitalWrite(bottomBlue, HIGH);
-      digitalWrite(leftYellow, HIGH);
-      digitalWrite(rightYellow, HIGH);
-      tone(speaker, 440, 750);
-      delay(750);
+      tone(speaker, 293, commandSpeed/2);
+      tone(speaker, 440, commandSpeed/2);
+      delay(commandSpeed);
       digitalWrite(topBlue, LOW);
       digitalWrite(bottomBlue, LOW);
       digitalWrite(leftYellow, LOW);
@@ -702,4 +701,33 @@ void readInputs()
 void resetInputs()
 {
   bluePressed = yellowPressed = switchFlipped = joyUp = joyDown = joyLeft = joyRight = false;
+}
+
+//The end game function
+void endGame(int score)
+{
+  int scaleArray[] = {131, 147, 165, 174, 196, 220, 247, 262, 294, 330, 349, 392, 440, 494, 523};
+  int lightArray[] = {topBlue, rightYellow, bottomBlue, leftYellow};
+  bool lightStates[] = {true, true, true, true};
+
+  for(int i = 0; i < score; i++)
+  {
+    digitalWrite(lightArray[i%4], lightStates[i%4]);
+    lightStates[i%4] = !lightStates[i%4];
+    tone(speaker, scaleArray[i], 300);
+    delay(340);
+  }
+
+  if(score == 15)
+  {
+    //Do some crazy stuff
+  }
+  
+  delay(1000);
+
+  //Turn all the lights off
+  digitalWrite(topBlue, LOW);
+  digitalWrite(bottomBlue, LOW);
+  digitalWrite(leftYellow, LOW);
+  digitalWrite(rightYellow, LOW);
 }
