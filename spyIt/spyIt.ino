@@ -24,6 +24,8 @@ int time2;
 int joyX;
 int joyY;
 int pastSwitchState;
+float commandSpeed = 1000;
+float commandPause = 750;
 
 //States of inputs (volatile because they're changed by interrupts)
 volatile bool bluePressed = false;
@@ -59,10 +61,6 @@ void setup()
 
   //Reading static random seed variable
   randomSeedInt = EEPROM.read(EEPROM_ADDRESS);
-
-  //Speed values
-  float commandSpeed = 1000;
-  float commandPause = 750;
 }
 
 void loop() 
@@ -718,9 +716,47 @@ void endGame(int score)
     delay(340);
   }
 
-  if(score == 15)
+  if(score == 14)
   {
-    //Do some crazy stuff
+    //Turn all the lights off
+    digitalWrite(topBlue, LOW);
+    digitalWrite(bottomBlue, LOW);
+    digitalWrite(leftYellow, LOW);
+    digitalWrite(rightYellow, LOW);
+
+    delay(1000);
+
+    digitalWrite(topBlue, HIGH);
+    digitalWrite(bottomBlue, HIGH);
+    digitalWrite(leftYellow, HIGH);
+    digitalWrite(rightYellow, HIGH);
+    //Play the new item theme from Metroid
+    tone(speaker, 175, 250);
+    delay(250);
+    tone(speaker, 233, 250);
+    delay(250);
+    tone(speaker, 262, 250);
+    delay(250);
+    tone(speaker, 294, 250);
+    delay(250);
+    tone(speaker, 330, 250);
+    delay(250);
+    tone(speaker, 262, 250);
+    delay(250);
+    tone(speaker, 220, 250);
+    delay(250);
+    tone(speaker, 262, 250);
+    delay(250);
+    tone(speaker, 349, 250);
+    delay(250);
+    tone(speaker, 294, 250);
+    delay(250);
+    tone(speaker, 233, 250);
+    delay(250);
+    tone(speaker, 196, 250);
+    delay(250);
+    tone(speaker, 220, 1000);
+    delay(1000);
   }
   
   delay(1000);
